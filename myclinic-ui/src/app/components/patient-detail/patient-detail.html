@@ -1,0 +1,326 @@
+<div [ngClass]="{'print-mode': printView}">
+  <!-- Print-Only View -->
+  <div *ngIf="printView" class="prescription-print-container">
+    <div class="prescription-document" *ngIf="patient">
+      <!-- Compact Header: Doctor + Patient Info (print optimized) -->
+      <div class="prescription-doctor-header compact">
+        <div class="doctor-clinic-section">
+          <h2 class="clinic-name">{{ doctorInfo.clinicName }}</h2>
+          <p class="clinic-address">{{ doctorInfo.clinicAddress }}</p>
+          <p class="clinic-contact">{{ doctorInfo.phone }} · {{ doctorInfo.email }}</p>
+        </div>
+
+        <div class="patient-info-section">
+          <div class="print-date">{{ getCurrentDate() }}</div>
+          <div class="patient-info-grid">
+            <div class="info-item">
+              <span class="label">Patient</span>
+              <span class="value">{{ patient.name }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">ID</span>
+              <span class="value">#{{ patient.id }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Age / Sex</span>
+              <span class="value">{{ patient.age }} / {{ patient.gender }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">PHID</span>
+              <span class="value">{{ patient.phid || '' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="prescription-divider compact-divider"></div>
+
+      <!-- Header (smaller to save vertical space) -->
+      <div class="prescription-header compact">
+        <div class="header-title">
+          <h1>PRESCRIPTION</h1>
+        </div>
+      </div>
+
+      <!-- Medicines & Prescriptions -->
+      <div class="prescription-section">
+        <h2 class="section-header">MEDICINES & PRESCRIPTIONS</h2>
+        <div *ngIf="patient?.medicines && patient.medicines.length > 0; else noMedicines" class="medicines-table">
+          <table>
+            <thead>
+              <tr>
+                <th class="col-no">S.No</th>
+                <th class="col-medicine">Medicine Name</th>
+                <th class="col-dosage">Dosage</th>
+                <th class="col-duration">Duration</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let medicine of patient.medicines; let i = index" class="print-medicine-item">
+                <td class="col-no">{{ i + 1 }}</td>
+                <td class="col-medicine">{{ medicine.name }}</td>
+                <td class="col-dosage">{{ medicine.dosage }}</td>
+                <td class="col-duration">{{ medicine.duration }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <ng-template #noMedicines>
+          <p class="no-data-prescription">No medicines prescribed</p>
+        </ng-template>
+      </div>
+
+      <!-- Lab Tests & Recommendations -->
+      <div class="prescription-section">
+        <h2 class="section-header">LAB TESTS & RECOMMENDATIONS</h2>
+        <div *ngIf="patient?.labs && patient.labs.length > 0; else noLabs" class="labs-table">
+          <table>
+            <thead>
+              <tr>
+                <th class="col-no">S.No</th>
+                <th class="col-test">Test Name</th>
+                <th class="col-result">Result</th>
+                <th class="col-date">Test Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let lab of patient.labs; let i = index" class="print-lab-item">
+                <td class="col-no">{{ i + 1 }}</td>
+                <td class="col-test">{{ lab.name }}</td>
+                <td class="col-result">{{ lab.result }}</td>
+                <td class="col-date">{{ lab.date }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <ng-template #noLabs>
+          <p class="no-data-prescription">No lab tests added</p>
+        </ng-template>
+      </div>
+
+      <!-- Doctor's Notes (print) -->
+      <div class="prescription-section">
+        <h2 class="section-header">DOCTOR'S NOTES</h2>
+        <div class="doctor-notes">
+          <p *ngIf="patient?.doctorNotes && patient.doctorNotes.length > 0">{{ patient.doctorNotes }}</p>
+          <p *ngIf="!patient?.doctorNotes || patient.doctorNotes.length === 0" class="no-data-prescription">No notes provided</p>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="prescription-footer">
+        <div class="signature-line">
+          <p>_________________________</p>
+          <p>Doctor's Signature & Seal</p>
+        </div>
+        <p class="footer-text">This is an electronically generated prescription. Valid without signature for reference.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Normal View (Editing Interface) -->
+  <div *ngIf="!printView" class="patient-detail-container">
+  <div class="edit-section no-print">
+    <!-- Success Messages -->
+    <div class="success-message" *ngIf="medicineSuccess">
+      Medicine added successfully!
+    </div>
+    <div class="success-message" *ngIf="labSuccess">
+      Lab test added successfully!
+    </div>
+    <!-- Doctor Information (read-only) -->
+    <mat-card class="section-card">
+      <mat-card-header>
+        <mat-card-title class="section-title">Doctor Information</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="doctor-info-display">
+          <div class="doctor-info-grid">
+          <div class="info-row">
+            <span class="label">Name:</span>
+            <span class="value">{{ doctorInfo.name }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Qualification:</span>
+            <span class="value">{{ doctorInfo.qualification }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Specialization:</span>
+            <span class="value">{{ doctorInfo.specialization }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Clinic Name:</span>
+            <span class="value">{{ doctorInfo.clinicName }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Clinic Address:</span>
+            <span class="value">{{ doctorInfo.clinicAddress }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Phone:</span>
+            <span class="value">{{ doctorInfo.phone }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Email:</span>
+            <span class="value">{{ doctorInfo.email }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Medicines Section -->
+    <mat-card class="section-card">
+      <mat-card-header>
+        <mat-card-title class="section-title">Manage Medicines</mat-card-title>
+        <button mat-raised-button color="primary" 
+          (click)="showMedicineForm = !showMedicineForm"
+          class="add-button">
+          + Add Medicine
+        </button>
+      </mat-card-header>
+
+      <!-- Add Medicine Form -->
+      <mat-card-content *ngIf="showMedicineForm" class="form-container">
+        <form [formGroup]="medicineForm" (ngSubmit)="addMedicine()" class="detail-form">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Medicine Name</mat-label>
+            <input matInput formControlName="name" placeholder="e.g., Aspirin">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Dosage</mat-label>
+            <input matInput formControlName="dosage" placeholder="e.g., 500 mg">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Duration</mat-label>
+            <input matInput formControlName="duration" placeholder="e.g., 10 days">
+          </mat-form-field>
+
+          <div class="form-actions">
+            <button mat-raised-button color="primary" type="submit">Save Medicine</button>
+            <button mat-button (click)="showMedicineForm = false; medicineForm.reset()">Cancel</button>
+          </div>
+        </form>
+      </mat-card-content>
+
+      <!-- Medicines List -->
+      <mat-card-content class="medicines-list">
+        <div *ngIf="patient?.medicines && patient.medicines.length > 0; else noMedicinesEdit">
+          <div *ngFor="let medicine of patient.medicines" class="medicine-item">
+            <div class="medicine-details">
+              <h3 class="medicine-name">{{ medicine.name }}</h3>
+              <p class="medicine-info">
+                <span class="badge">{{ medicine.dosage }}</span>
+                <span class="badge">{{ medicine.duration }}</span>
+              </p>
+            </div>
+            <button mat-icon-button color="warn" 
+              (click)="removeMedicine(medicine.id)"
+              title="Delete medicine">
+              ✕
+            </button>
+          </div>
+        </div>
+        <ng-template #noMedicinesEdit>
+          <p class="no-data">No medicines prescribed yet</p>
+        </ng-template>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Lab Tests Section -->
+    <mat-card class="section-card">
+      <mat-card-header>
+        <mat-card-title class="section-title">Manage Lab Tests</mat-card-title>
+        <button mat-raised-button color="accent" 
+          (click)="showLabForm = !showLabForm"
+          class="add-button">
+          + Add Lab Test
+        </button>
+      </mat-card-header>
+
+      <!-- Add Lab Test Form -->
+      <mat-card-content *ngIf="showLabForm" class="form-container">
+        <form [formGroup]="labForm" (ngSubmit)="addLabTest()" class="detail-form">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Lab Test Name</mat-label>
+            <input matInput formControlName="name" placeholder="e.g., Blood Test">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Result</mat-label>
+            <input matInput formControlName="result" placeholder="e.g., Normal">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Test Date</mat-label>
+            <input matInput formControlName="date" type="date">
+          </mat-form-field>
+
+          <div class="form-actions">
+            <button mat-raised-button color="accent" type="submit">Save Lab Test</button>
+            <button mat-button (click)="showLabForm = false; labForm.reset()">Cancel</button>
+          </div>
+        </form>
+      </mat-card-content>
+
+      <!-- Lab Tests List -->
+      <mat-card-content class="labs-list">
+        <div *ngIf="patient?.labs && patient.labs.length > 0; else noLabsEdit">
+          <div *ngFor="let lab of patient.labs" class="lab-item">
+            <div class="lab-details">
+              <h3 class="lab-name">{{ lab.name }}</h3>
+              <p class="lab-info">
+                <span class="badge">Result: {{ lab.result }}</span>
+                <span class="badge">{{ lab.date }}</span>
+              </p>
+            </div>
+            <button mat-icon-button color="warn" 
+              (click)="removeLabTest(lab.id)"
+              title="Delete lab test">
+              ✕
+            </button>
+          </div>
+        </div>
+        <ng-template #noLabsEdit>
+          <p class="no-data">No lab tests added yet</p>
+        </ng-template>
+      </mat-card-content>
+    </mat-card>
+
+      <!-- Doctor's Notes (voice capture) -->
+      <mat-card class="section-card">
+        <mat-card-header>
+          <mat-card-title class="section-title">Doctor's Notes (voice)</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="form-container">
+          <div class="voice-controls">
+            <button mat-raised-button color="primary" (click)="toggleRecognition()" [disabled]="!recognition">
+              {{ recognizing ? 'Stop' : 'Start' }} Recording
+            </button>
+            <span class="voice-hint" *ngIf="!recognition">(Voice not supported in this browser)</span>
+          </div>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Notes (editable)</mat-label>
+            <textarea matInput rows="6" [(ngModel)]="transcript"></textarea>
+          </mat-form-field>
+
+          <div class="form-actions">
+            <button mat-raised-button color="accent" (click)="saveNotes()">Save (Replace)</button>
+            <button mat-stroked-button color="primary" (click)="appendNote()">Add Note</button>
+            <span class="save-message" *ngIf="notesSaved">Saved</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div><!-- End of Edit Section (.no-print) -->
+  </div><!-- End of Normal View (!printView) -->
+
+  <!-- Print and Navigation Controls -->
+  <div class="controls-bar" [ngClass]="{'no-print': !printView}">
+    <button mat-button class="back-button" (click)="goBack()" *ngIf="!printView">← Back to List</button>
+    <button mat-raised-button color="accent" (click)="printPrescription()" class="print-button" *ngIf="!printView">
+      🖨 Print Prescription
+    </button>
+  </div>
+
+</div><!-- End of Root Container -->

@@ -1,0 +1,58 @@
+<div class="form-container">
+  <button mat-stroked-button [routerLink]="['/dashboard']" class="back-button">
+    Back to Dashboard
+  </button>
+
+  <mat-card class="form-card">
+    <mat-card-header>
+      <mat-card-title>Patient Registration</mat-card-title>
+      <mat-card-subtitle>Add a new patient to the system</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form (ngSubmit)="submit()" class="patient-form">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Patient Name</mat-label>
+          <input matInput [(ngModel)]="name" name="name" placeholder="Enter patient name" required />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Age</mat-label>
+          <input matInput type="number" [(ngModel)]="age" name="age" placeholder="Enter patient age" required />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Gender</mat-label>
+          <mat-select [(ngModel)]="gender" name="gender" required>
+            <mat-option value="Male">Male</mat-option>
+            <mat-option value="Female">Female</mat-option>
+            <mat-option value="Other">Other</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Phone Number</mat-label>
+          <input matInput [(ngModel)]="phone" name="phone" placeholder="Enter phone number" />
+        </mat-form-field>
+
+        <div class="form-actions">
+          <button type="submit" mat-raised-button color="primary">
+            Add Patient
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card *ngIf="successMessage" class="success-message">
+    <mat-card-content>
+      {{ successMessage }}
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card *ngIf="errorMessage" class="error-message">
+    <mat-card-content>
+      {{ errorMessage }}
+    </mat-card-content>
+  </mat-card>
+</div>

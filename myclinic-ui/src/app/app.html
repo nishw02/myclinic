@@ -1,0 +1,30 @@
+<mat-toolbar color="primary" class="app-header" *ngIf="isLoggedIn$ | async">
+  <span>MyClinics</span>
+  <span class="spacer"></span>
+  <nav>
+    <button mat-button [routerLink]="['/dashboard']">
+      Dashboard
+    </button>
+    <button mat-button [routerLink]="['/registration']">
+      Register Patient
+    </button>
+    <button mat-button [routerLink]="['/patient-list']">
+      View Patients
+    </button>
+  </nav>
+
+  <div class="user-menu">
+    <button mat-button [matMenuTriggerFor]="menu" class="user-button">
+      <span>{{ currentUser$ | async }}</span>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="logout()">
+        <span>Logout</span>
+      </button>
+    </mat-menu>
+  </div>
+</mat-toolbar>
+
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>

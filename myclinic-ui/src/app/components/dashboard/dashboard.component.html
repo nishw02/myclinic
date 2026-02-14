@@ -1,0 +1,38 @@
+<div class="dashboard-container">
+  <h2>Admin Dashboard</h2>
+  <p>Welcome to the MyClinics Patient Management System</p>
+
+  <div class="cards-container">
+    <mat-card class="dashboard-card">
+      <mat-card-header>
+        <mat-card-title>Add New Patient</mat-card-title>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <p>Register a new patient in the system and keep track of their information.</p>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-raised-button color="primary" [routerLink]="['/registration']">
+          Go to Registration
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <mat-card class="dashboard-card">
+      <mat-card-header>
+        <mat-card-title>View All Patients</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <p>View and manage existing patients in the database.</p>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-raised-button color="primary" [routerLink]="['/patient-list']">
+          View Patient List
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>
